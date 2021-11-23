@@ -1,3 +1,5 @@
+use randompicklib::hoge;
+
 fn main() {
-    println!("Hello, world!");
+    hoge();
 }
