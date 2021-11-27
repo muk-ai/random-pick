@@ -10,3 +10,15 @@ mod tests {
 pub fn hoge() {
     println!("randompicklib::hoge() called");
 }
+
+use std::fs;
+use std::path::{Path, PathBuf};
+
+pub fn get_files(path: &Path) -> std::io::Result<Vec<PathBuf>> {
+    let dir = fs::read_dir(path)?;
+    let mut files: Vec<PathBuf> = Vec::new();
+    for entry in dir.into_iter() {
+        files.push(entry?.path());
+    }
+    Ok(files)
+}
