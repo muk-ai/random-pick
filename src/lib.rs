@@ -25,6 +25,7 @@ mod tests {
             .map(|path| path.as_path().file_name())
             .collect();
         assert_eq!(files.len(), 2);
+        // TODO: readdirで返るファイルの順序は保証されていないのでsortした方がいい
         assert_eq!(files[0], Some(OsStr::new("dir2")));
         assert_eq!(files[1], Some(OsStr::new("file1_in_dir1")));
     }
