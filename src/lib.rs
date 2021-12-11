@@ -1,7 +1,3 @@
-pub fn hoge() {
-    println!("randompicklib::hoge() called");
-}
-
 use std::fs;
 use std::path::{Path, PathBuf};
 
