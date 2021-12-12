@@ -20,13 +20,13 @@ mod tests {
         let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
         path.push("tests/dir1");
         let files = get_files(&path).unwrap();
-        let files: Vec<&OsStr> = files
+        let mut files: Vec<&OsStr> = files
             .iter()
             .map(|path| path.as_path().file_name())
             .flatten()
             .collect();
+        files.sort();
         assert_eq!(files.len(), 2);
-        // TODO: readdirで返るファイルの順序は保証されていないのでsortした方がいい
         assert_eq!(files[0], OsStr::new("dir2"));
         assert_eq!(files[1], OsStr::new("file1_in_dir1"));
     }
