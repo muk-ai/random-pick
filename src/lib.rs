@@ -38,8 +38,9 @@ mod tests {
             .flatten()
             .collect();
         files.sort();
-        assert_eq!(files.len(), 2);
-        assert_eq!(files[0], OsStr::new("dir2"));
-        assert_eq!(files[1], OsStr::new("file1_in_dir1"));
+        assert_eq!(files.len(), 3);
+        assert_eq!(files[0], OsStr::new("file1_in_dir1"));
+        assert_eq!(files[1], OsStr::new("file2_in_dir2"));
+        assert_eq!(files[2], OsStr::new("file3_in_dir3"));
     }
 }
