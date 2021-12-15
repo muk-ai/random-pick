@@ -5,7 +5,19 @@ pub fn get_files(path: &Path) -> std::io::Result<Vec<PathBuf>> {
     let dir = fs::read_dir(path)?;
     let mut files: Vec<PathBuf> = Vec::new();
     for entry in dir.into_iter() {
-        files.push(entry?.path());
+        let entry = entry?;
+        let file_type = entry.file_type()?;
+        if file_type.is_dir() {
+            let mut dir_files = get_files(&entry.path())?;
+            files.append(&mut dir_files);
+        } else if file_type.is_file() {
+            files.push(entry.path());
+        } else {
+            panic!(
+                "This file is neither a directory nor a file. {:?}",
+                entry.path()
+            )
+        }
     }
     Ok(files)
 }
