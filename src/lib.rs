@@ -34,8 +34,7 @@ mod tests {
         let files = get_files(&path).unwrap();
         let mut files: Vec<&OsStr> = files
             .iter()
-            .map(|path| path.as_path().file_name())
-            .flatten()
+            .filter_map(|path| path.as_path().file_name())
             .collect();
         files.sort();
         assert_eq!(files.len(), 3);
