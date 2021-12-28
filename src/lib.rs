@@ -24,7 +24,7 @@ pub fn get_files(path: &Path) -> std::io::Result<Vec<PathBuf>> {
     Ok(files)
 }
 
-pub fn choose_one(files: Vec<PathBuf>) -> Option<PathBuf> {
+pub fn pick_one(files: Vec<PathBuf>) -> Option<PathBuf> {
     let mut rng = thread_rng();
     return files.choose(&mut rng).cloned();
 }
