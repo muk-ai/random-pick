@@ -1,11 +1,10 @@
 use std::env;
 
-use randompicklib::{get_files, pick_one};
+use randompicklib::random_pick;
 
 fn main() -> std::io::Result<()> {
     let target_dir = env::current_dir()?;
-    let list = get_files(&target_dir)?;
-    let picked_file = pick_one(list);
+    let picked_file = random_pick(&target_dir);
     println!("{:?}", picked_file);
     Ok(())
 }
