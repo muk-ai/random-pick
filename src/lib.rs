@@ -3,7 +3,12 @@ use rand::thread_rng;
 use std::fs;
 use std::path::{Path, PathBuf};
 
-pub fn get_files(path: &Path) -> std::io::Result<Vec<PathBuf>> {
+pub fn random_pick(path: &Path) -> Option<PathBuf> {
+    let files = get_files(path).unwrap();
+    pick_one(files)
+}
+
+fn get_files(path: &Path) -> std::io::Result<Vec<PathBuf>> {
     let dir = fs::read_dir(path)?;
     let mut files: Vec<PathBuf> = Vec::new();
     for entry in dir.into_iter() {
@@ -24,7 +29,7 @@ pub fn get_files(path: &Path) -> std::io::Result<Vec<PathBuf>> {
     Ok(files)
 }
 
-pub fn pick_one(files: Vec<PathBuf>) -> Option<PathBuf> {
+fn pick_one(files: Vec<PathBuf>) -> Option<PathBuf> {
     let mut rng = thread_rng();
     return files.choose(&mut rng).cloned();
 }
