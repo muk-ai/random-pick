@@ -15,9 +15,9 @@ jobs:
           # - os: ubuntu-latest
           #   artifact_name: random-pick
           #   asset_name: random-pick-linux-amd64
-          # - os: windows-latest
-          #   artifact_name: random-pick.exe
-          #   asset_name: random-pick-windows-amd64
+          - os: windows-latest
+            artifact_name: random-pick.exe
+            asset_name: random-pick-windows-amd64
           - os: macos-latest
             artifact_name: random-pick
             asset_name: random-pick-macos-amd64
