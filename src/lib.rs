@@ -11,7 +11,7 @@ pub fn random_pick(path: &Path) -> Option<PathBuf> {
 fn get_files(path: &Path) -> std::io::Result<Vec<PathBuf>> {
     let dir = fs::read_dir(path)?;
     let mut files: Vec<PathBuf> = Vec::new();
-    for entry in dir.into_iter() {
+    for entry in dir {
         let entry = entry?;
         let file_type = entry.file_type()?;
         if file_type.is_dir() {
