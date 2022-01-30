@@ -11,7 +11,7 @@ pub fn random_pick(path: &Path) -> Option<PathBuf> {
 fn get_files(path: &Path) -> std::io::Result<Vec<PathBuf>> {
     let dir = fs::read_dir(path)?;
     let mut files: Vec<PathBuf> = Vec::new();
-    for entry in dir.into_iter() {
+    for entry in dir {
         let entry = entry?;
         let file_type = entry.file_type()?;
         if file_type.is_dir() {
@@ -19,6 +19,8 @@ fn get_files(path: &Path) -> std::io::Result<Vec<PathBuf>> {
             files.append(&mut dir_files);
         } else if file_type.is_file() {
             files.push(entry.path());
+        } else if file_type.is_symlink() {
+            // ignore
         } else {
             panic!(
                 "This file is neither a directory nor a file. {:?}",
@@ -64,5 +66,18 @@ mod tests {
         let file_name_str = file_name.to_str().unwrap();
         assert_eq!(file_name_str, "ツハ\u{3099}キ");
         assert_ne!(file_name_str, "ツバキ");
+    }
+
+    #[test]
+    fn ignore_symlink() {
+        let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        path.push("tests/symlink");
+        let files = get_files(&path).unwrap();
+        let files: Vec<&OsStr> = files
+            .iter()
+            .filter_map(|path| path.as_path().file_name())
+            .collect();
+        assert_eq!(files.len(), 1);
+        assert_eq!(files[0], OsStr::new("file1"));
     }
 }
