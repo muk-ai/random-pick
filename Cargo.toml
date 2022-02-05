@@ -1,5 +1,5 @@
 [package]
-name = "random-pick"
+name = "randompick"
 version = "0.1.0"
 edition = "2021"
 
@@ -10,7 +10,7 @@ name = "randompicklib"
 path = "src/lib.rs"
 
 [[bin]]
-name = "random-pick"
+name = "randompick"
 path = "src/main.rs"
 
 [dependencies]
