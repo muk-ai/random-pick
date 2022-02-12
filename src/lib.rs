@@ -92,4 +92,18 @@ mod tests {
         assert_eq!(files.len(), 1);
         assert_eq!(files[0], OsStr::new("file1"));
     }
+
+    #[test]
+    fn filter_by_markdown_file() {
+        let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        let extensions = Some(vec![OsString::from("md")]);
+        path.push("tests/filter_by_markdown_file");
+        let files = get_files(&path, &extensions).unwrap();
+        let files: Vec<&OsStr> = files
+            .iter()
+            .filter_map(|path| path.as_path().file_name())
+            .collect();
+        assert_eq!(files.len(), 1);
+        assert_eq!(files[0], OsStr::new("file1.md"));
+    }
 }
