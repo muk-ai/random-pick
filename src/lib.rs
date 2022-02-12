@@ -4,8 +4,9 @@ use std::ffi::OsString;
 use std::fs;
 use std::path::{Path, PathBuf};
 
-pub fn random_pick(path: &Path, allowd_extensions: &Option<Vec<OsString>>) -> Option<PathBuf> {
-    let files = get_files(path, allowd_extensions).unwrap();
+pub fn random_pick(path: &Path) -> Option<PathBuf> {
+    let options = allowd_extensions_from_args();
+    let files = get_files(path, &options).unwrap();
     pick_one(files)
 }
 
@@ -48,6 +49,23 @@ fn pick_one(files: Vec<PathBuf>) -> Option<PathBuf> {
     return files.choose(&mut rng).cloned();
 }
 
+fn allowd_extensions_from_args() -> Option<Vec<OsString>> {
+    let args: Vec<String> = std::env::args().into_iter().skip(1).collect();
+    let mut extensions: Vec<OsString> = vec![];
+    for chunk in args.chunks(2) {
+        if let [name, value] = chunk {
+            if name == "-e" {
+                extensions.push(OsString::from(value))
+            }
+        }
+    }
+    if extensions.is_empty() {
+        None
+    } else {
+        Some(extensions)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -73,7 +91,7 @@ mod tests {
     fn get_katakana_dakuten_file_name() {
         let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
         path.push("tests/katakana_dakuten");
-        let file = random_pick(&path, &None).unwrap();
+        let file = random_pick(&path).unwrap();
         let file_name = file.file_name().unwrap();
         let file_name_str = file_name.to_str().unwrap();
         assert_eq!(file_name_str, "ツハ\u{3099}キ");
