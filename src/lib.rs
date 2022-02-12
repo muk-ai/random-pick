@@ -1,24 +1,36 @@
 use rand::seq::SliceRandom;
 use rand::thread_rng;
+use std::ffi::OsString;
 use std::fs;
 use std::path::{Path, PathBuf};
 
-pub fn random_pick(path: &Path) -> Option<PathBuf> {
-    let files = get_files(path).unwrap();
+pub fn random_pick(path: &Path, allowd_extensions: &Option<Vec<OsString>>) -> Option<PathBuf> {
+    let files = get_files(path, allowd_extensions).unwrap();
     pick_one(files)
 }
 
-fn get_files(path: &Path) -> std::io::Result<Vec<PathBuf>> {
+fn get_files(
+    path: &Path,
+    allowd_extensions: &Option<Vec<OsString>>,
+) -> std::io::Result<Vec<PathBuf>> {
     let dir = fs::read_dir(path)?;
     let mut files: Vec<PathBuf> = Vec::new();
     for entry in dir {
         let entry = entry?;
         let file_type = entry.file_type()?;
         if file_type.is_dir() {
-            let mut dir_files = get_files(&entry.path())?;
+            let mut dir_files = get_files(&entry.path(), allowd_extensions)?;
             files.append(&mut dir_files);
         } else if file_type.is_file() {
-            files.push(entry.path());
+            if let Some(extensions) = allowd_extensions {
+                if let Some(extension) = entry.path().extension() {
+                    if extensions.contains(&extension.to_os_string()) {
+                        files.push(entry.path());
+                    }
+                }
+            } else {
+                files.push(entry.path());
+            }
         } else if file_type.is_symlink() {
             // ignore
         } else {
@@ -45,7 +57,7 @@ mod tests {
     fn get_files_works() {
         let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
         path.push("tests/dir1");
-        let files = get_files(&path).unwrap();
+        let files = get_files(&path, &None).unwrap();
         let mut files: Vec<&OsStr> = files
             .iter()
             .filter_map(|path| path.as_path().file_name())
@@ -61,7 +73,7 @@ mod tests {
     fn get_katakana_dakuten_file_name() {
         let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
         path.push("tests/katakana_dakuten");
-        let file = random_pick(&path).unwrap();
+        let file = random_pick(&path, &None).unwrap();
         let file_name = file.file_name().unwrap();
         let file_name_str = file_name.to_str().unwrap();
         assert_eq!(file_name_str, "ツハ\u{3099}キ");
@@ -72,7 +84,7 @@ mod tests {
     fn ignore_symlink() {
         let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
         path.push("tests/symlink");
-        let files = get_files(&path).unwrap();
+        let files = get_files(&path, &None).unwrap();
         let files: Vec<&OsStr> = files
             .iter()
             .filter_map(|path| path.as_path().file_name())
