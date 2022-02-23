@@ -72,9 +72,9 @@ mod tests {
     use std::ffi::OsStr;
 
     #[test]
-    fn get_files_works() {
+    fn get_files_recursively() {
         let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-        path.push("tests/dir1");
+        path.push("tests/three-tiered_directory");
         let files = get_files(&path, &None).unwrap();
         let mut files: Vec<&OsStr> = files
             .iter()
@@ -85,17 +85,6 @@ mod tests {
         assert_eq!(files[0], OsStr::new("file1_in_dir1"));
         assert_eq!(files[1], OsStr::new("file2_in_dir2"));
         assert_eq!(files[2], OsStr::new("file3_in_dir3"));
-    }
-
-    #[test]
-    fn get_katakana_dakuten_file_name() {
-        let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-        path.push("tests/katakana_dakuten");
-        let file = random_pick(&path).unwrap();
-        let file_name = file.file_name().unwrap();
-        let file_name_str = file_name.to_str().unwrap();
-        assert_eq!(file_name_str, "ツハ\u{3099}キ");
-        assert_ne!(file_name_str, "ツバキ");
     }
 
     #[test]
