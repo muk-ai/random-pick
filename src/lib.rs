@@ -72,9 +72,9 @@ mod tests {
     use std::ffi::OsStr;
 
     #[test]
-    fn get_files_works() {
+    fn get_files_recursively() {
         let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-        path.push("tests/dir1");
+        path.push("tests/three-tiered_directory");
         let files = get_files(&path, &None).unwrap();
         let mut files: Vec<&OsStr> = files
             .iter()
