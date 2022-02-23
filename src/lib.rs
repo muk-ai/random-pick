@@ -88,17 +88,6 @@ mod tests {
     }
 
     #[test]
-    fn get_katakana_dakuten_file_name() {
-        let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-        path.push("tests/katakana_dakuten");
-        let file = random_pick(&path).unwrap();
-        let file_name = file.file_name().unwrap();
-        let file_name_str = file_name.to_str().unwrap();
-        assert_eq!(file_name_str, "ツハ\u{3099}キ");
-        assert_ne!(file_name_str, "ツバキ");
-    }
-
-    #[test]
     fn ignore_symlink() {
         let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
         path.push("tests/symlink");
